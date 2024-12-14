@@ -1,7 +1,7 @@
 {
   "name": "prodapp",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,12 @@
   },
   "dependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.17.0",
+    "@mui/material": "^5.14.4",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "axios": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
@@ -23,6 +28,9 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.12.0",
-    "vite": "^6.0.1"
+    "vite": "^6.0.1",
+    "tailwindcss": "^3.4.16",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.16"
   }
 }
