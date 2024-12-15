@@ -67,19 +67,62 @@ const PomodoroTimer = () => {
       flexDirection: 'column', 
       alignItems: 'center', 
       justifyContent: 'center', 
-      color: '#fff'
+      color: '#fff',
+      position: 'relative'
     }}>
+      {/* Background Animation */}
+      <div className="background-animation" style={{
+        position: 'absolute', 
+        top: '0', 
+        left: '0', 
+        right: '0', 
+        bottom: '0', 
+        zIndex: '-1',
+        background: 'radial-gradient(circle, rgba(0, 255, 255, 0.2), rgba(0, 0, 0, 0.5))',
+        animation: 'background 10s infinite alternate'
+      }}></div>
+
       <h2 style={{
         fontSize: '2.5rem', 
         marginBottom: '20px', 
         textShadow: '0 4px 10px rgba(0, 255, 255, 0.3)'
       }}>Pomodoro Timer</h2>
+
       <div style={{ width: '300px', marginBottom: '30px' }}>
         <p style={{
           fontSize: '3rem', 
           fontWeight: 'bold', 
           margin: '20px 0'
         }}>{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</p>
+
+        {/* Circular Progress Bar */}
+        <div style={{
+          position: 'relative', 
+          width: '150px', 
+          height: '150px', 
+          borderRadius: '50%', 
+          border: '10px solid #00ffcc', 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          margin: '20px auto'
+        }}>
+          <div style={{
+            width: '120px', 
+            height: '120px', 
+            background: '#222', 
+            borderRadius: '50%', 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center'
+          }}>
+            <p style={{
+              fontSize: '1.5rem', 
+              color: '#fff'
+            }}>{progress}%</p>
+          </div>
+        </div>
+
         <div style={{
           height: '10px', 
           width: '100%', 
@@ -95,39 +138,53 @@ const PomodoroTimer = () => {
             transition: 'width 0.5s ease'
           }}></div>
         </div>
+
         <p style={{
           fontSize: '1rem', 
           color: '#00ffcc'
         }}>{progress}%</p>
       </div>
+
       <div style={{ margin: '20px 0' }}>
-        <button style={{
-          backgroundColor: '#00ffcc', 
-          color: '#fff', 
-          padding: '10px 25px', 
-          borderRadius: '30px', 
-          border: 'none', 
-          fontSize: '1.2rem', 
-          cursor: 'pointer', 
-          margin: '0 10px', 
-          transition: 'background-color 0.3s'
-        }} onClick={handleStartPause}>
+        <button 
+          style={{
+            backgroundColor: '#00ffcc', 
+            color: '#fff', 
+            padding: '10px 25px', 
+            borderRadius: '30px', 
+            border: 'none', 
+            fontSize: '1.2rem', 
+            cursor: 'pointer', 
+            margin: '0 10px', 
+            transition: 'background-color 0.3s, transform 0.2s',
+          }} 
+          onClick={handleStartPause}
+          onMouseEnter={(e) => e.target.style.transform = 'scale(1.1)'}
+          onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+        >
           {isActive ? 'Pause' : 'Start'}
         </button>
-        <button style={{
-          backgroundColor: '#00ffcc', 
-          color: '#fff', 
-          padding: '10px 25px', 
-          borderRadius: '30px', 
-          border: 'none', 
-          fontSize: '1.2rem', 
-          cursor: 'pointer', 
-          margin: '0 10px', 
-          transition: 'background-color 0.3s'
-        }} onClick={handleReset}>
+
+        <button 
+          style={{
+            backgroundColor: '#ff3d3d', 
+            color: '#fff', 
+            padding: '10px 25px', 
+            borderRadius: '30px', 
+            border: 'none', 
+            fontSize: '1.2rem', 
+            cursor: 'pointer', 
+            margin: '0 10px', 
+            transition: 'background-color 0.3s, transform 0.2s',
+          }} 
+          onClick={handleReset}
+          onMouseEnter={(e) => e.target.style.transform = 'scale(1.1)'}
+          onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+        >
           Reset
         </button>
       </div>
+
       <form onSubmit={handleSetTimer} style={{ marginTop: '20px' }}>
         <input 
           type="number" 
