@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./components/Homepage";  // HomePage file
+import LoginRegister from "./components/LoginRegister";  // LoginRegister file
 import Dashboard from "./components/Dashboard";
 import TaskList from "./components/TaskList";
 import PomodoroTimer from "./components/PomodoroTimer";
@@ -15,12 +17,22 @@ import ProjectManagement from "./components/ProjectManagement";
 import WeeklyOverview from "./components/WeeklyOverview";
 import ReflectionJournal from "./components/ReflectionJournal";
 import ResourceLibrary from "./components/ResourceLibrary";
+import TeamCollabation from "./components/TeamCollabation";
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        {/* Route for HomePage, accessible at '/' */}
+        <Route path="/" element={<HomePage />} />
+
+        {/* Route for LoginPage, accessible at '/login' */}
+        <Route path="/login" element={<LoginRegister />} />
+
+        {/* Route for Dashboard, accessible at '/dashboard' */}
+        <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* Other routes */}
         <Route path="/task-list" element={<TaskList />} />
         <Route path="/pomodoro-timer" element={<PomodoroTimer />} />
         <Route path="/goal-tracker" element={<GoalTracker />} />
@@ -35,6 +47,7 @@ const App = () => {
         <Route path="/weekly-overview" element={<WeeklyOverview />} />
         <Route path="/reflection-journal" element={<ReflectionJournal />} />
         <Route path="/resource-library" element={<ResourceLibrary />} />
+        <Route path="/team-collaboration" element={<TeamCollabation />} /> {/* New route */}
       </Routes>
     </Router>
   );
