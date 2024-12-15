@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "./styles.css"; // Assuming the CSS is within this file
 
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,84 +8,126 @@ const LoginRegister = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Handle Login
-  const handleLogin = async (e) => {
+  // Handle Login (with localStorage check)
+  const handleLogin = (e) => {
     e.preventDefault(); // Prevent form refresh
 
-    try {
-      const response = await axios.post("http://localhost:5000/api/user/login", {
-        email,
-        password,
-      });
+    // Get registered user data from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
 
-      // Save token to localStorage
-      localStorage.setItem("token", response.data.token);
-
+    if (
+      storedUser &&
+      storedUser.email === email &&
+      storedUser.password === password
+    ) {
+      alert("Login successful!");
       // Navigate to dashboard
       navigate("/dashboard");
-    } catch (error) {
-      console.error("Login error:", error.response?.data?.message || error.message);
-      alert(error.response?.data?.message || "Login failed! Please try again.");
+    } else {
+      alert("Invalid email or password!");
     }
   };
 
-  // Handle Registration
-  const handleRegister = async (e) => {
+  // Handle Registration (store user data in localStorage)
+  const handleRegister = (e) => {
     e.preventDefault(); // Prevent form refresh
 
-    try {
-      await axios.post("http://localhost:5000/api/user/register", {
-        name: fullName,
-        email,
-        password,
-      });
+    // Save user data to localStorage
+    const user = { fullName, email, password };
+    localStorage.setItem("user", JSON.stringify(user));
 
-      // Show success message
-      alert("Registration successful! Please log in.");
-
-      // Switch to login view
-      setIsLogin(true);
-    } catch (error) {
-      console.error("Registration error:", error.response?.data?.message || error.message);
-      alert(error.response?.data?.message || "Registration failed! Please try again.");
-    }
+    alert("Registration successful! Please log in.");
+    // Switch to login view
+    setIsLogin(true);
   };
 
   return (
-    <div className="login-register-container">
-      <h1 className="login-register-header">
+    <div
+      style={{
+        fontFamily: "'Poppins', sans-serif",
+        textAlign: "center",
+        padding: "50px",
+        background: "#111", // Dark background for consistency
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#fff",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: "3rem",
+          marginBottom: "40px",
+          textShadow: "0 4px 10px rgba(0, 255, 255, 0.3)",
+          letterSpacing: "3px",
+        }}
+      >
         {isLogin ? "Login" : "Register"}
       </h1>
-      <p className="login-register-subheader">
+      <p
+        style={{
+          marginBottom: "40px",
+          fontSize: "1.2rem",
+          color: "#00ffcc",
+        }}
+      >
         {isLogin
           ? "Welcome back! Please log in to continue."
           : "New here? Create an account to get started."}
       </p>
 
-      <div className="switch-buttons">
+      <div style={{ margin: "20px 0" }}>
         <button
-          className={`switch-button ${isLogin ? "active" : ""}`}
           onClick={() => setIsLogin(true)}
+          style={{
+            backgroundColor: isLogin ? "#00ffcc" : "#333", // Active state cyan
+            color: isLogin ? "#fff" : "#ccc",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            marginRight: "10px",
+            transition: "all 0.3s ease",
+          }}
         >
           LOGIN
         </button>
         <button
-          className={`switch-button ${!isLogin ? "active" : ""}`}
           onClick={() => setIsLogin(false)}
+          style={{
+            backgroundColor: !isLogin ? "#00ffcc" : "#333", // Active state cyan
+            color: !isLogin ? "#fff" : "#ccc",
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+          }}
         >
           REGISTER
         </button>
       </div>
 
       {isLogin ? (
-        <form onSubmit={handleLogin} className="login-register-form">
+        <form onSubmit={handleLogin} style={{ marginTop: "20px" }}>
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="form-input"
+            style={{
+              display: "block",
+              margin: "10px auto",
+              padding: "10px",
+              width: "300px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              background: "#222",
+              color: "#fff",
+            }}
           />
           <input
             type="password"
@@ -95,21 +135,52 @@ const LoginRegister = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="form-input"
+            style={{
+              display: "block",
+              margin: "10px auto",
+              padding: "10px",
+              width: "300px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              background: "#222",
+              color: "#fff",
+            }}
           />
-          <button type="submit" className="form-submit-button">
+          <button
+            type="submit"
+            style={{
+              backgroundColor: "#00ffcc",
+              color: "#fff",
+              padding: "10px 25px",
+              borderRadius: "30px",
+              border: "none",
+              fontSize: "1.2rem",
+              cursor: "pointer",
+              marginTop: "20px",
+              transition: "background-color 0.3s",
+            }}
+          >
             LOGIN
           </button>
         </form>
       ) : (
-        <form onSubmit={handleRegister} className="login-register-form">
+        <form onSubmit={handleRegister} style={{ marginTop: "20px" }}>
           <input
             type="text"
             placeholder="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             required
-            className="form-input"
+            style={{
+              display: "block",
+              margin: "10px auto",
+              padding: "10px",
+              width: "300px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              background: "#222",
+              color: "#fff",
+            }}
           />
           <input
             type="email"
@@ -117,7 +188,16 @@ const LoginRegister = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="form-input"
+            style={{
+              display: "block",
+              margin: "10px auto",
+              padding: "10px",
+              width: "300px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              background: "#222",
+              color: "#fff",
+            }}
           />
           <input
             type="password"
@@ -125,9 +205,31 @@ const LoginRegister = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="form-input"
+            style={{
+              display: "block",
+              margin: "10px auto",
+              padding: "10px",
+              width: "300px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              background: "#222",
+              color: "#fff",
+            }}
           />
-          <button type="submit" className="form-submit-button">
+          <button
+            type="submit"
+            style={{
+              backgroundColor: "#00ffcc",
+              color: "#fff",
+              padding: "10px 25px",
+              borderRadius: "30px",
+              border: "none",
+              fontSize: "1.2rem",
+              cursor: "pointer",
+              marginTop: "20px",
+              transition: "background-color 0.3s",
+            }}
+          >
             REGISTER
           </button>
         </form>
@@ -137,88 +239,3 @@ const LoginRegister = () => {
 };
 
 export default LoginRegister;
-
-/* Add the CSS directly below this comment */
-<style>
-/* Container styling */
-.login-register-container {
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  padding: 50px;
-  background: linear-gradient(135deg, #1c1c1c, #333);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-}
-
-/* Header */
-.login-register-header {
-  font-size: 3rem;
-  margin-bottom: 40px;
-  text-shadow: 0 4px 10px rgba(0, 255, 255, 0.3);
-  letter-spacing: 3px;
-}
-
-/* Subheader */
-.login-register-subheader {
-  margin-bottom: 40px;
-  font-size: 1.2rem;
-  color: #00ffcc;
-}
-
-/* Switch buttons */
-.switch-buttons {
-  margin: 20px 0;
-}
-
-.switch-button {
-  background-color: #333;
-  color: #ccc;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
-  transition: all 0.3s ease;
-}
-
-.switch-button.active {
-  background-color: #00ffcc;
-  color: #fff;
-}
-
-/* Form styling */
-.login-register-form {
-  margin-top: 20px;
-}
-
-.form-input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 300px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background: #222;
-  color: #fff;
-}
-
-.form-submit-button {
-  background-color: #00ffcc;
-  color: #fff;
-  padding: 10px 25px;
-  border-radius: 30px;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s;
-}
-
-.form-submit-button:hover {
-  background-color: #00ccaa;
-}
-</style>
