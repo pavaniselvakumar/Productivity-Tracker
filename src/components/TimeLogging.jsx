@@ -1,14 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const TimeLogging = () => {
-  // State to track current task, time, and task logs
   const [currentTask, setCurrentTask] = useState("");
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [startTime, setStartTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
   const [timeLogs, setTimeLogs] = useState([]);
+
+  // Real-time timer update
+  useEffect(() => {
+    let timer;
+    if (isTimerRunning) {
+      timer = setInterval(() => {
+        setElapsedTime(Math.floor((new Date() - startTime) / 1000 / 60));
+      }, 1000);
+    } else {
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [isTimerRunning, startTime]);
 
   // Start or stop the timer
   const handleToggleTimer = () => {
+    if (currentTask.trim() === "") {
+      alert("Please enter a task name before starting the timer.");
+      return;
+    }
+
     if (isTimerRunning) {
       const endTime = new Date();
       const timeSpent = (endTime - startTime) / 1000 / 60; // in minutes
@@ -21,6 +39,7 @@ const TimeLogging = () => {
       setTimeLogs([...timeLogs, newLog]);
       setIsTimerRunning(false);
       setStartTime(null);
+      setElapsedTime(0);
     } else {
       setStartTime(new Date());
       setIsTimerRunning(true);
@@ -31,12 +50,13 @@ const TimeLogging = () => {
   const handleResetTimer = () => {
     setIsTimerRunning(false);
     setStartTime(null);
+    setElapsedTime(0);
   };
 
-  // Handle task change
+  // Handle task input change
   const handleTaskChange = (e) => setCurrentTask(e.target.value);
 
-  // Styles for the UI
+  // Styles
   const styles = {
     container: {
       fontFamily: "'Poppins', sans-serif",
@@ -98,7 +118,7 @@ const TimeLogging = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Time Logging</h1>
-      
+
       {/* Task Input Form */}
       <div style={styles.form}>
         <input
@@ -109,21 +129,20 @@ const TimeLogging = () => {
           style={styles.input}
         />
       </div>
-      
+
       {/* Timer Controls */}
       <div style={styles.timerDisplay}>
         {isTimerRunning ? (
           <div>
-            <span>Timer Running...</span>
+            <span>Time Elapsed: {elapsedTime} minutes</span>
             <br />
             <button onClick={handleToggleTimer} style={styles.button}>
-              Stop Timer
+              Log Time
             </button>
           </div>
         ) : startTime ? (
           <div>
-            <span>Time Spent: </span>
-            {Math.floor((new Date() - startTime) / 1000 / 60)} minutes
+            <span>Last Time: {elapsedTime} minutes</span>
             <br />
             <button onClick={handleToggleTimer} style={styles.button}>
               Log Time
@@ -144,20 +163,23 @@ const TimeLogging = () => {
       {/* Task Logs */}
       <div style={styles.logContainer}>
         <h2>Logged Time</h2>
-        {timeLogs.map((log, index) => (
-          <div key={index} style={styles.logItem}>
-            <strong>{log.task}</strong>
-            <p>
-              Time Spent: {log.timeSpent} minutes
-              <br />
-              Started: {log.startTime} | Ended: {log.endTime}
-            </p>
-          </div>
-        ))}
+        {timeLogs.length > 0 ? (
+          timeLogs.map((log, index) => (
+            <div key={index} style={styles.logItem}>
+              <strong>{log.task}</strong>
+              <p>
+                Time Spent: {log.timeSpent} minutes
+                <br />
+                Started: {log.startTime} | Ended: {log.endTime}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>No logs yet. Start tracking your tasks!</p>
+        )}
       </div>
     </div>
   );
 };
 
 export default TimeLogging;
-
