@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Line, Pie } from 'react-chartjs-2';
@@ -197,17 +196,3 @@ const PerformanceAnalytics = () => {
 };
 
 export default PerformanceAnalytics;
-=======
-import React from "react";
-
-const PerformanceAnalytics = () => {
-  return (
-    <div>
-      <h2>Performance Analytics</h2>
-      <p>Analyze your productivity and performance here.</p>
-    </div>
-  );
-};
-
-export default PerformanceAnalytics;
->>>>>>> b57fd23e636ddf0fdb0ab11a2ae72db3408766e2

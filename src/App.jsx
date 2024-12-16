@@ -1,10 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-<<<<<<< HEAD
 import HomePage from "./components/Firstpage";  // HomePage file
-=======
-import HomePage from "./components/FirstPage";  // HomePage file
->>>>>>> b57fd23e636ddf0fdb0ab11a2ae72db3408766e2
 import LoginRegister from "./components/LoginRegister";  // LoginRegister file
 import Dashboard from "./components/Dashboard";
 import TaskList from "./components/TaskList";
