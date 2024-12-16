@@ -1,0 +1,14 @@
+.task-card {
+    background-color: #1a1a1a;
+    color: white;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: transform 0.2s;
+  }
+  
+  .task-card:hover {
+    transform: scale(1.05);
+  }
+  
