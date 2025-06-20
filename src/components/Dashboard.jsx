@@ -4,20 +4,14 @@ import { Link } from "react-router-dom";
 const Dashboard = () => {
   const features = [
     { name: "Task List", path: "/task-list" },
-    { name: "Pomodoro Timer", path: "/pomodoro-timer" },
     { name: "Goal Tracker", path: "/goal-tracker" },
     { name: "Daily Planner", path: "/daily-planner" },
     { name: "Performance Analytics", path: "/performance-analytics" },
     { name: "Habit Tracker", path: "/habit-tracker" },
     { name: "Focus Mode", path: "/focus-mode" },
-    { name: "Time Logging", path: "/time-logging" },
-    { name: "Reminders", path: "/reminders" },
     { name: "Work-Life Balance", path: "/work-life-balance" },
-    { name: "Project Management", path: "/project-management" },
     { name: "Weekly Overview", path: "/weekly-overview" },
     { name: "Reflection Journal", path: "/reflection-journal" },
-    { name: "Team Collaboration", path: "/team-collaboration" },
-    { name: "Resource Library", path: "/resource-library" },
   ];
 
   return (
@@ -42,7 +36,7 @@ const Dashboard = () => {
           letterSpacing: "3px",
         }}
       >
-        YOUR DASHBOARD
+        PRODUCTIVITY TRACKER - DASHBOARD
       </h1>
       <div
         style={{

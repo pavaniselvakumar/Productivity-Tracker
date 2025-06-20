@@ -3,239 +3,209 @@ import { useNavigate } from "react-router-dom";
 
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [fullName, setFullName] = useState(""); // For registration
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
-  // Handle Login (with localStorage check)
+  // Handle input changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle Login action
   const handleLogin = (e) => {
-    e.preventDefault(); // Prevent form refresh
+    e.preventDefault();
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Get registered user data from localStorage
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const user = users.find(
+      (u) => u.email === formData.email && u.password === formData.password
+    );
 
-    if (
-      storedUser &&
-      storedUser.email === email &&
-      storedUser.password === password
-    ) {
+    if (user) {
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
       alert("Login successful!");
-      // Navigate to dashboard
       navigate("/dashboard");
     } else {
       alert("Invalid email or password!");
     }
   };
 
-  // Handle Registration (store user data in localStorage)
+  // Handle Register action
   const handleRegister = (e) => {
-    e.preventDefault(); // Prevent form refresh
+    e.preventDefault();
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Save user data to localStorage
-    const user = { fullName, email, password };
-    localStorage.setItem("user", JSON.stringify(user));
+    if (users.some((u) => u.email === formData.email)) {
+      alert("User already exists!");
+      return;
+    }
+
+    const newUser = {
+      fullName: formData.fullName,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
 
     alert("Registration successful! Please log in.");
-    // Switch to login view
-    setIsLogin(true);
+    setIsLogin(true); // Switch to login form
+  };
+
+  // Handle Guest Login action
+  const handleGuestLogin = () => {
+    const guestUser = { fullName: "Guest", email: "guest@demo.com" };
+    localStorage.setItem("loggedInUser", JSON.stringify(guestUser));
+    navigate("/dashboard");
   };
 
   return (
-    <div
-      style={{
-        fontFamily: "'Poppins', sans-serif",
-        textAlign: "center",
-        padding: "50px",
-        background: "#111", // Dark background for consistency
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#fff",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "3rem",
-          marginBottom: "40px",
-          textShadow: "0 4px 10px rgba(0, 255, 255, 0.3)",
-          letterSpacing: "3px",
-        }}
-      >
-        {isLogin ? "Login" : "Register"}
-      </h1>
-      <p
-        style={{
-          marginBottom: "40px",
-          fontSize: "1.2rem",
-          color: "#00ffcc",
-        }}
-      >
-        {isLogin
-          ? "Welcome back! Please log in to continue."
-          : "New here? Create an account to get started."}
-      </p>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <h1 style={styles.title}>{isLogin ? "Login" : "Register"}</h1>
+        <p style={styles.subtitle}>
+          {isLogin ? "Welcome back! Please log in." : "Create your account to get started."}
+        </p>
 
-      <div style={{ margin: "20px 0" }}>
-        <button
-          onClick={() => setIsLogin(true)}
-          style={{
-            backgroundColor: isLogin ? "#00ffcc" : "#333", // Active state cyan
-            color: isLogin ? "#fff" : "#ccc",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            marginRight: "10px",
-            transition: "all 0.3s ease",
-          }}
-        >
-          LOGIN
-        </button>
-        <button
-          onClick={() => setIsLogin(false)}
-          style={{
-            backgroundColor: !isLogin ? "#00ffcc" : "#333", // Active state cyan
-            color: !isLogin ? "#fff" : "#ccc",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-          }}
-        >
-          REGISTER
-        </button>
-      </div>
-
-      {isLogin ? (
-        <form onSubmit={handleLogin} style={{ marginTop: "20px" }}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{
-              display: "block",
-              margin: "10px auto",
-              padding: "10px",
-              width: "300px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              background: "#222",
-              color: "#fff",
-            }}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{
-              display: "block",
-              margin: "10px auto",
-              padding: "10px",
-              width: "300px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              background: "#222",
-              color: "#fff",
-            }}
-          />
+        <div style={styles.toggleButtons}>
           <button
-            type="submit"
+            onClick={() => setIsLogin(true)}
             style={{
-              backgroundColor: "#00ffcc",
-              color: "#fff",
-              padding: "10px 25px",
-              borderRadius: "30px",
-              border: "none",
-              fontSize: "1.2rem",
-              cursor: "pointer",
-              marginTop: "20px",
-              transition: "background-color 0.3s",
+              ...styles.toggleButton,
+              backgroundColor: isLogin ? "#00ffcc" : "#333",
+              color: isLogin ? "#111" : "#ccc",
             }}
           >
             LOGIN
           </button>
-        </form>
-      ) : (
-        <form onSubmit={handleRegister} style={{ marginTop: "20px" }}>
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-            style={{
-              display: "block",
-              margin: "10px auto",
-              padding: "10px",
-              width: "300px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              background: "#222",
-              color: "#fff",
-            }}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{
-              display: "block",
-              margin: "10px auto",
-              padding: "10px",
-              width: "300px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              background: "#222",
-              color: "#fff",
-            }}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{
-              display: "block",
-              margin: "10px auto",
-              padding: "10px",
-              width: "300px",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              background: "#222",
-              color: "#fff",
-            }}
-          />
           <button
-            type="submit"
+            onClick={() => setIsLogin(false)}
             style={{
-              backgroundColor: "#00ffcc",
-              color: "#fff",
-              padding: "10px 25px",
-              borderRadius: "30px",
-              border: "none",
-              fontSize: "1.2rem",
-              cursor: "pointer",
-              marginTop: "20px",
-              transition: "background-color 0.3s",
+              ...styles.toggleButton,
+              backgroundColor: !isLogin ? "#00ffcc" : "#333",
+              color: !isLogin ? "#111" : "#ccc",
             }}
           >
             REGISTER
           </button>
+        </div>
+
+        <form onSubmit={isLogin ? handleLogin : handleRegister}>
+          {/* Register form - Only show full name input when in Register mode */}
+          {!isLogin && (
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Full Name"
+              value={formData.fullName}
+              onChange={handleChange}
+              required
+              style={styles.input}
+            />
+          )}
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          <button type="submit" style={styles.submitButton}>
+            {isLogin ? "LOGIN" : "REGISTER"}
+          </button>
         </form>
-      )}
+
+        {isLogin && (
+          <button
+            type="button"
+            onClick={handleGuestLogin}
+            style={{ ...styles.submitButton, backgroundColor: "#444" }}
+          >
+            CONTINUE AS GUEST
+          </button>
+        )}
+      </div>
     </div>
   );
+};
+
+// 🧼 Styles
+const styles = {
+  page: {
+    fontFamily: "'Poppins', sans-serif",
+    background: "#111",
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
+    color: "#fff",
+  },
+  card: {
+    backdropFilter: "blur(15px)",
+    background: "rgba(255, 255, 255, 0.05)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    borderRadius: "20px",
+    padding: "40px",
+    maxWidth: "420px",
+    width: "100%",
+    boxShadow: "0 8px 24px rgba(0, 255, 204, 0.2)",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: "2.5rem",
+    marginBottom: "10px",
+  },
+  subtitle: {
+    marginBottom: "30px",
+    color: "#00ffcc",
+  },
+  toggleButtons: {
+    marginBottom: "20px",
+  },
+  toggleButton: {
+    padding: "10px 20px",
+    marginRight: "10px",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  input: {
+    display: "block",
+    margin: "10px auto",
+    padding: "10px",
+    width: "90%",
+    maxWidth: "300px",
+    borderRadius: "5px",
+    border: "1px solid #555",
+    background: "#222",
+    color: "#fff",
+  },
+  submitButton: {
+    backgroundColor: "#00ffcc",
+    color: "#111",
+    padding: "10px 25px",
+    borderRadius: "30px",
+    border: "none",
+    fontSize: "1rem",
+    cursor: "pointer",
+    marginTop: "20px",
+  },
 };
 
 export default LoginRegister;
